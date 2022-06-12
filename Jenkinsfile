@@ -1,30 +1,32 @@
 pipeline {
     agent any
- 
+
     stages {
-        stage('Git') {
+        stage ('Build Image') {
+
             steps {
-                echo '> Checking out the Git version control ...'
-                checkout scm
+                withEnv(["PATH=/usr/local/bin:$PATH"]){ 
+                             sh 'make build'
+                }
+            }
+       }
+
+        stage ('Push Image') {
+
+            steps {
+                 withEnv(["PATH=/usr/local/bin:$PATH"]){ 
+                            sh 'make push'
+                 }
             }
         }
-        stage('Build') {
+
+
+        stage ('Deployment Conatiner') {
             steps {
-                echo '> Building the docker containers ...'
-                sh 'make -sC docker build'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo '> Running the application tests ...'
-                sh 'make -sC docker test'
-            }
-        }
-        stage('Destroy') {
-            steps {
-                echo '> Destroying the docker artifacts ...'
-                sh 'make -sC docker destroy'
-            }
-        }
+                withEnv(["PATH=/usr/local/bin:$PATH"]){ 
+                            sh 'make deploy'
+                }
+          }
+       }
     }
 }
