@@ -1,5 +1,6 @@
 pipeline {
     agent any
+ 
     stages {
         stage('Git') {
             steps {
@@ -10,19 +11,19 @@ pipeline {
         stage('Build') {
             steps {
                 echo '> Building the docker containers ...'
-                sh 'make -sC docker/dev build'
+                sh 'make -sC docker build'
             }
         }
         stage('Test') {
             steps {
                 echo '> Running the application tests ...'
-                sh 'make -sC docker/dev test'
+                sh 'make -sC docker test'
             }
         }
         stage('Destroy') {
             steps {
                 echo '> Destroying the docker artifacts ...'
-                sh 'make -sC docker/dev destroy'
+                sh 'make -sC docker destroy'
             }
         }
     }
